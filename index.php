@@ -65,7 +65,8 @@
 
         if (isset($campers)) {
             foreach ($campers as $camper) {
-                $camperarray=urlencode(json_encode($campers));
+                $cont=0;
+                $camperarray=urlencode(json_encode($campers[$cont]));
               echo '
                     <tr>
                         <td>' .$camper['nombre']. '</td>
@@ -78,6 +79,7 @@
                         <td>'.$camper['trainer'].'</td>
                         <td><a href="subirdatos.php?id='. $camperarray.'">Prueba</a></td>
                     </tr>';
+                $cont+=1;
             }
             }
         ?>
