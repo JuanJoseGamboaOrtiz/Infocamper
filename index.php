@@ -48,6 +48,7 @@
             <th>Horario de entrada</th>
             <th>Team</th>
             <th>Trainer</th>
+            <th>Acción</th>
         </tr>
         <?php
            $config = [
@@ -64,16 +65,19 @@
 
         if (isset($campers)) {
             foreach ($campers as $camper) {
-              echo '<tr>
-                    <td>' .$camper['nombre']. '</td>
-                    <td>'.$camper['apellidos'].' </td>
-                    <td>'.$camper['direccion'].'</td>
-                    <td>'.$camper['edad'].'</td>
-                    <td>'.$camper['email'].'</td>
-                    <td>'.$camper['horae'].'</td>
-                    <td>'.$camper['team'].'</td>
-                    <td>'.$camper['trainer'].'</td>
-                </tr>';
+                $camperarray=urlencode(json_encode($campers));
+              echo '
+                    <tr>
+                        <td>' .$camper['nombre']. '</td>
+                        <td>'.$camper['apellidos'].' </td>
+                        <td>'.$camper['direccion'].'</td>
+                        <td>'.$camper['edad'].'</td>
+                        <td>'.$camper['email'].'</td>
+                        <td>'.$camper['horae'].'</td>
+                        <td>'.$camper['team'].'</td>
+                        <td>'.$camper['trainer'].'</td>
+                        <td><a href="subirdatos.php?id='. $camperarray.'">Prueba</a></td>
+                    </tr>';
             }
             }
         ?>
