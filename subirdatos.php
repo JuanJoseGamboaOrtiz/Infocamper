@@ -1,3 +1,8 @@
 <?php
 
-var_dump( json_decode($_GET['id']));
+$variable= json_decode($_GET['id'],true);
+echo $variable;
+
+header('Location: index.php?existe='. urlencode($variable));
+
+?>

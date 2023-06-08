@@ -1,3 +1,51 @@
+<?php
+        session_destroy();
+        $config = [
+            'http' => [
+                'method' => 'GET'
+        ]
+        ];
+        
+        $stream= stream_context_create($config);
+
+        $campers = file_get_contents('https://6480f4b2f061e6ec4d4a1e27.mockapi.io/campers', false, $stream);
+        $campers = json_decode($campers,true);
+
+        function subirDatos(string $info, array $campers1) {
+            if( isset($_GET['existe'])){
+                $text=$campers1[$_GET['existe']-1][$info];
+                echo $text;
+            }
+        }
+
+        if (isset($_POST['agregar'])){
+            $data=[
+                'nombre'=> $_POST['nombre'],
+                'apellidos'=> $_POST['apellido'],
+                'direccion'=> $_POST['direccion'],
+                'edad'=>$_POST['edad'],
+                'email'=>$_POST['email'],
+                'horae'=>$_POST['horae'],
+                'team'=>$_POST['team'],
+                'trainer'=>$_POST['trainer'],
+                'cc'=>$_POST['cedula']
+
+            ];
+            $config = [
+                'http' => [
+                    'method' => 'POST',
+                    'header' =>'Content-Type: application/json',
+                    'content' => json_encode($data)
+            ]
+            ];
+
+            $config= stream_context_create($config);
+            $_DATA= file_get_contents('https://6480f4b2f061e6ec4d4a1e27.mockapi.io/campers',false,$config);
+        }
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,31 +57,31 @@
     <title>InfoCamper</title>
 </head>
 <body>
-    <form action="">
+    <form method="POST">
         <div class="primera">
-        <input type="text" placeholder="Nombre" name="nombre">
+        <input type="text" placeholder="Nombre" name="nombre"  value="<?php subirDatos('nombre',$campers);?>" >
         <h1>CampusLands</h1>
-        <input type="text" placeholder="Apellido" name="apellido">
-        <input type="text" placeholder="Direccion" name="direccion">
-        <input type="number" placeholder="Edad" name="edad">
-        <input type="email" placeholder="Email" name="email">
+        <input type="text" placeholder="Apellido" name="apellido" value= "<?php subirDatos('apellidos',$campers);?>" >
+        <input type="text" placeholder="Direccion" name="direccion"  value="<?php subirDatos('direccion',$campers);?>" >
+        <input type="number" placeholder="Edad" name="edad" value="<?php subirDatos('edad',$campers);?>" >
+        <input type="email" placeholder="Email" name="email" value="<?php echo subirDatos('email',$campers);?>"  >
         </div>
         <div class="segunda">
             <div class="inputs">
-                <input type="time"  name="hora">
-                <input type="text" placeholder="Team" name="team">  
-                <input type="text" placeholder="Trainer" name="trainer">
+                <input type="time"  name="horae" value= "<?php subirDatos('horae',$campers);?>" >
+                <input type="text" placeholder="Team" name="team" value="<?php subirDatos('team',$campers);?>" >  
+                <input type="text" placeholder="Trainer" name="trainer" value="<?php subirDatos('trainer',$campers);?>" >
             </div>
             <div class="botones">
                 <div class="campo">
-                    <i class="fa-solid fa-check"></i>
+                    <button type="submit" name="agregar"> <i class="fa-solid fa-check"></i></button>
                     <i class="fa-solid fa-xmark"></i>
                 </div>
                 <div class="campo">
                     <i class="fa-solid fa-pen"></i>
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
-                <input type="text"  name="cedula" placeholder="Cedula">
+                <input type="text"  name="cedula" placeholder="Cedula" value=<?php subirDatos('cc',$campers);?> >
             </div>
         </div>
     </form>
@@ -51,37 +99,26 @@
             <th>Acción</th>
         </tr>
         <?php
-           $config = [
-            'http' => [
-                'method' => 'GET'
-            ]
-            ];
-
-        $stream= stream_context_create($config);
-
-        $campers = file_get_contents('https://6480f4b2f061e6ec4d4a1e27.mockapi.io/campers', false, $stream);
-        $campers = json_decode($campers,true);
-
-
-        if (isset($campers)) {
-            foreach ($campers as $camper) {
-                $cont=0;
-                $camperarray=urlencode(json_encode($campers[$cont]));
-              echo '
-                    <tr>
-                        <td>' .$camper['nombre']. '</td>
-                        <td>'.$camper['apellidos'].' </td>
-                        <td>'.$camper['direccion'].'</td>
-                        <td>'.$camper['edad'].'</td>
-                        <td>'.$camper['email'].'</td>
-                        <td>'.$camper['horae'].'</td>
-                        <td>'.$camper['team'].'</td>
-                        <td>'.$camper['trainer'].'</td>
-                        <td><a href="subirdatos.php?id='. $camperarray.'">Prueba</a></td>
-                    </tr>';
-                $cont+=1;
+    
+            if (isset($campers)) {
+                foreach ($campers as $camper) {
+                echo '
+                        <tr>
+                            <td>' .$camper['nombre']. '</td>
+                            <td>'.$camper['apellidos'].' </td>
+                            <td>'.$camper['direccion'].'</td>
+                            <td>'.$camper['edad'].'</td>
+                            <td>'.$camper['email'].'</td>
+                            <td>'.$camper['horae'].'</td>
+                            <td>'.$camper['team'].'</td>
+                            <td>'.$camper['trainer'].'</td>
+                            <td><a href="subirdatos.php?id='. $camper['id'] .'"><i class="fa-solid fa-arrow-up"></i></a></td>
+                        </tr>';
+                }
             }
-            }
+
         ?>
+    </table>
+        
 </body>
 </html>

@@ -32,3 +32,13 @@
     justify-content: space-around;
     align-items: center;
 }
+
+a{
+    color: unset;
+}
+
+button{
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+}
