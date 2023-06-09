@@ -12,8 +12,20 @@
         $campers = json_decode($campers,true);
 
         function subirDatos(string $info, array $campers1) {
+
             if( isset($_GET['existe'])){
-                $text=$campers1[$_GET['existe']-1][$info];
-                echo $text;
+                
+                $camper=filtrar($campers1,"get");
+                $camper=array_values($camper);
+                $text=$camper[0][$info];
+                print_r($text);   
+            }
+            if ( isset($_POST['buscar'])){
+                $camper=filtrar($campers1,"post");
+                $camper=array_values($camper);
+                $text=$camper[0][$info];
+                print_r($text);   
             }
         }
+
+?>

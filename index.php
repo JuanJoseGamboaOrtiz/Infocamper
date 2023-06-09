@@ -1,6 +1,27 @@
 <?php
         include('traercampers.php');
 
+        function filtrar2($var){
+            return $var['cc']==$_GET['existe'];
+        }
+
+        function filtrar3($var){
+            return $var['cc']==$_POST['cedula'];
+        }
+
+        function filtrar($campers1,$tipo){
+            // var_dump($campers1);
+            if($tipo=="get"){
+                $camper=array_filter($campers1,'filtrar2');
+                $camper= array_values($camper);
+            }else if($tipo=="post"){
+                $camper=array_filter($campers1,'filtrar3');
+                $camper= array_values($camper);
+            }
+
+            return $camper;
+        }
+
         if (isset($_POST['agregar'])){
             $data=[
                 'nombre'=> $_POST['nombre'],
@@ -28,6 +49,60 @@
             exit;
         }
 
+        if(isset($_POST['eliminar'])){
+            
+
+            function filtrar($var){
+                return $var['cc']==$_POST['cedula'];
+            }
+
+            $camper=array_filter($campers,'filtrar');
+            $camper= array_values($camper);
+
+
+            $config = [
+                'http' => [
+                    'method' => 'DELETE',
+                    'header' =>'Content-Type: application/json',
+             ]
+            ];
+
+            $config= stream_context_create($config);
+            $_DATA= file_get_contents('https://6480f4b2f061e6ec4d4a1e27.mockapi.io/campers/'.$camper[0]['id'],false,$config);
+            header("Location: " . $_SERVER['REQUEST_URI']);
+            exit;
+            
+        }
+
+        if(isset($_POST['actualizar'])){
+
+            $data=[
+                'nombre'=> $_POST['nombre'],
+                'apellidos'=> $_POST['apellido'],
+                'direccion'=> $_POST['direccion'],
+                'edad'=>$_POST['edad'],
+                'email'=>$_POST['email'],
+                'horae'=>$_POST['horae'],
+                'team'=>$_POST['team'],
+                'trainer'=>$_POST['trainer'],
+                'cc'=>$_POST['cedula']
+
+            ];
+
+            $config = [
+                'http' => [
+                    'method' => 'PUT',
+                    'header' =>'Content-Type: application/json',
+                    'content' =>   json_encode($data)
+                    ]
+            ];
+
+            $config= stream_context_create($config);
+            $_DATA= file_get_contents('https://6480f4b2f061e6ec4d4a1e27.mockapi.io/campers/'.$camper[0]['id'],false,$config);
+
+        }
+
+    
 ?>
 
 
@@ -42,6 +117,9 @@
     <title>InfoCamper</title>
 </head>
 <body>
+    <pre>
+
+    </pre>
     <form method="POST">
         <div class="primera">
         <input type="text" placeholder="Nombre" name="nombre"  value="<?php subirDatos('nombre',$campers);?>" >
@@ -60,13 +138,14 @@
             <div class="botones">
                 <div class="campo">
                     <button type="submit" name="agregar"> <i class="fa-solid fa-check"></i></button>
-                    <i class="fa-solid fa-xmark"></i>
+                    <button type="submit" name="eliminar"> <i class="fa-solid fa-xmark"></i></button>
+
                 </div>
                 <div class="campo">
-                    <i class="fa-solid fa-pen"></i>
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <button type="submit" name="actualizar"> <i class="fa-solid fa-pen"></i></button>
+                    <button type="submit" name="buscar"> <i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
-                <input type="text"  name="cedula" placeholder="Cedula" value=<?php subirDatos('cc',$campers);?> >
+                <input type="text"  name="cedula" placeholder="Cedula" value="<?php subirDatos('cc',$campers);?>" required>
             </div>
         </div>
     </form>
@@ -96,7 +175,7 @@
                             <td>'.$camper['horae'].'</td>
                             <td>'.$camper['team'].'</td>
                             <td>'.$camper['trainer'].'</td>
-                            <td><a href="subirdatos.php?id='. $camper['id'] .'"><i class="fa-solid fa-arrow-up"></i></a></td>
+                            <td><a href="subirdatos.php?cc='. $camper['cc'] .'"><i class="fa-solid fa-arrow-up"></i></a></td>
                         </tr>';
                 }
             }
