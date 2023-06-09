@@ -51,15 +51,8 @@
 
         if(isset($_POST['eliminar'])){
             
-
-            function filtrar($var){
-                return $var['cc']==$_POST['cedula'];
-            }
-
-            $camper=array_filter($campers,'filtrar');
-            $camper= array_values($camper);
-
-
+            $camper=filtrar($campers,"post");
+            $camper=array_values($camper);
             $config = [
                 'http' => [
                     'method' => 'DELETE',
